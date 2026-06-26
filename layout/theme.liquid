@@ -3,20 +3,18 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="{{ settings.color_primary_dark }}">
     <link rel="canonical" href="{{ canonical_url }}">
     <link rel="preconnect" href="https://cdn.shopify.com">
     <link rel="preconnect" href="https://fonts.shopifycdn.com">
     <link rel="dns-prefetch" href="https://optimizely.shopifycdn.com">
-    <link rel="dns-prefetch" href="https://cdn.customer.io">
-    <link rel="preconnect" href="https://monorail-edge.shopifysvc.com" crossorigin>
-    
+
     <title>
       {% if page_title == blank %}
         {{ shop.name }}
       {% else %}
-        {{ page_title }} | {{ shop.name }}
+        {{ page_title }} — {{ shop.name }}
       {% endif %}
     </title>
 
@@ -30,36 +28,23 @@
     {{ 'base.css' | asset_url | stylesheet_tag }}
     {{ 'styles.css' | asset_url | stylesheet_tag }}
 
-    <script src="https://cdn.jsdelivr.net/npm/three@r128/build/three.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
-
-    <script src="{{ 'scene.js' | asset_url }}" type="module" defer></script>
-
-    {% section 'announcement' %}
-  </head>
-
-  <body class="template-{{ page.template_name }}">
-    {% section 'header' %}
-    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
-      {{ content_for_layout }}
-    </main>
-    {% section 'footer' %}
-
     <script>
       window.themeSettings = {
         colorPrimaryDark: '{{ settings.color_primary_dark }}',
         colorPrimaryLight: '{{ settings.color_primary_light }}',
         colorAccent: '{{ settings.color_accent }}',
-        sceneModelScale: {{ settings.scene_model_scale | default: 2 }},
-        sceneLightingIntensity: {{ settings.scene_lighting_intensity | default: 1.5 }},
-        particlesEnabled: {{ settings.scene_particles_enabled | default: true }},
-        particleCount: {{ settings.scene_particle_count | default: 500 }},
-        performancePreset: '{{ settings.performance_preset | default: 'medium' }}',
-        reduceMotion: {{ settings.performance_reduce_motion | default: true }},
-        cloudflareUrl: '{{ settings.cloudflare_cdn_url }}',
-        modelAssetUrl: '{{ settings.model_asset_url | default: '/cdn/shop/t/assets/hero.glb' }}'
+        modelAssetUrl: '{{ settings.model_asset_url }}'
       };
     </script>
+  </head>
+
+  <body>
+    {% section 'header' %}
+
+    <main id="MainContent" class="main-content" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
   </body>
 </html>

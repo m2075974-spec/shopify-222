@@ -3,30 +3,233 @@
     <div class="loading-spinner"></div>
   </div>
 
-  <canvas id="canvas"></canvas>
+  <!-- Canvas for 3D Scene -->
+  <canvas id="canvas" style="display: block; width: 100%; height: 100%;"></canvas>
 
+  <!-- Content Overlay -->
   <div class="hero-content">
     <div class="glass-overlay">
-      <h1>{{ section.settings.title }}</h1>
-      <p class="subtitle">{{ section.settings.subtitle }}</p>
+      <h1 class="hero-title">{{ section.settings.title }}</h1>
+      <p class="hero-subtitle">{{ section.settings.subtitle }}</p>
       <a href="{{ section.settings.button_link }}" class="cta-button">
         {{ section.settings.button_text }}
       </a>
     </div>
   </div>
 
+  <!-- Scroll Hint -->
   <div class="scroll-hint">↓</div>
 </div>
+
+<!-- 3D Scene Script -->
+<script type="module">
+  // Import Three.js
+  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@r128/build/three.module.js';
+  import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@r128/examples/jsm/loaders/GLTFLoader.js';
+
+  class PremiumHeroScene {
+    constructor() {
+      this.canvas = document.getElementById('canvas');
+      if (!this.canvas) return;
+
+      this.scene = new THREE.Scene();
+      this.scene.background = new THREE.Color('#050505');
+      this.scene.fog = new THREE.Fog('#050505', 50, 100);
+
+      this.camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      this.camera.position.set(0, 1.5, 4);
+
+      this.renderer = new THREE.WebGLRenderer({
+        canvas: this.canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance'
+      });
+      this.renderer.setPixelRatio(window.devicePixelRatio);
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
+      this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+      this.setupLighting();
+      this.createParticles();
+      this.loadModel();
+      this.setupEventListeners();
+      this.animate();
+    }
+
+    setupLighting() {
+      // Directional light
+      const directional = new THREE.DirectionalLight(0xffffff, 3);
+      directional.position.set(5, 10, 7.5);
+      this.scene.add(directional);
+
+      // Ambient light
+      const ambient = new THREE.AmbientLight(0xffffff, 1.2);
+      this.scene.add(ambient);
+
+      // Point light for accent
+      const point = new THREE.PointLight(0xff6b9d, 1.5);
+      point.position.set(-5, 3, 5);
+      this.scene.add(point);
+    }
+
+    createParticles() {
+      const particleCount = 500;
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(particleCount * 3);
+      const velocities = new Float32Array(particleCount * 3);
+
+      for (let i = 0; i < particleCount; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 20;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+
+        velocities[i * 3] = (Math.random() - 0.5) * 0.02;
+        velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
+        velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
+      }
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.userData.velocities = velocities;
+
+      const material = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.1,
+        transparent: true,
+        opacity: 0.5,
+        sizeAttenuation: true
+      });
+
+      this.particleSystem = new THREE.Points(geometry, material);
+      this.scene.add(this.particleSystem);
+    }
+
+    loadModel() {
+      // Optional: Load 3D model if URL provided
+      const modelUrl = window.themeSettings?.modelAssetUrl || '';
+      if (modelUrl) {
+        const loader = new GLTFLoader();
+        loader.load(
+          modelUrl,
+          (gltf) => {
+            this.model = gltf.scene;
+            this.model.scale.set(2, 2, 2);
+            this.scene.add(this.model);
+            this.hideLoadingScreen();
+          },
+          undefined,
+          (error) => {
+            console.log('Model not loaded, using placeholder effects only');
+            this.hideLoadingScreen();
+          }
+        );
+      } else {
+        setTimeout(() => this.hideLoadingScreen(), 1500);
+      }
+    }
+
+    hideLoadingScreen() {
+      const loadingScreen = document.querySelector('.loading-screen');
+      if (loadingScreen) {
+        loadingScreen.style.animation = 'fadeOut 0.8s ease-out forwards';
+      }
+    }
+
+    setupEventListeners() {
+      window.addEventListener('resize', () => this.onWindowResize());
+      window.addEventListener('scroll', () => this.onScroll());
+      window.addEventListener('mousemove', (e) => this.onMouseMove(e));
+    }
+
+    onWindowResize() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(width, height);
+    }
+
+    onScroll() {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      this.scrollProgress = scrollTop / docHeight;
+    }
+
+    onMouseMove(event) {
+      if (!this.model) return;
+
+      const x = (event.clientX / window.innerWidth) * 2 - 1;
+      const y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      this.model.rotation.y += (x - this.model.rotation.y) * 0.05;
+      this.model.rotation.x += (y - this.model.rotation.x) * 0.05;
+    }
+
+    updateParticles() {
+      if (!this.particleSystem) return;
+
+      const positions = this.particleSystem.geometry.attributes.position.array;
+      const velocities = this.particleSystem.geometry.userData.velocities;
+
+      for (let i = 0; i < positions.length; i += 3) {
+        positions[i] += velocities[i];
+        positions[i + 1] += velocities[i + 1];
+        positions[i + 2] += velocities[i + 2];
+      }
+
+      this.particleSystem.geometry.attributes.position.needsUpdate = true;
+    }
+
+    animate() {
+      requestAnimationFrame(() => this.animate());
+
+      // Auto-rotate model
+      if (this.model) {
+        this.model.rotation.y += 0.001;
+      }
+
+      // Update particles
+      this.updateParticles();
+
+      // Camera animation on scroll
+      if (this.camera) {
+        this.camera.position.z = 4 - this.scrollProgress * 2;
+      }
+
+      this.renderer.render(this.scene, this.camera);
+    }
+  }
+
+  // Initialize scene when page loads
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      new PremiumHeroScene();
+    });
+  } else {
+    new PremiumHeroScene();
+  }
+</script>
 
 <style>
   .hero {
     position: relative;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    margin-top: -60px;
+    padding-top: 60px;
   }
 
   #canvas {
@@ -42,45 +245,59 @@
     position: absolute;
     z-index: 10;
     text-align: center;
-    pointer-events: none;
+    pointer-events: auto;
   }
 
-  h1 {
-    font-size: clamp(2.5rem, 8vw, 6rem);
+  .glass-overlay {
+    background: rgba(5, 5, 5, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    max-width: 600px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 8vw, 5rem);
     font-weight: 800;
-    letter-spacing: -1px;
+    letter-spacing: -2px;
     line-height: 1.1;
     margin-bottom: 1rem;
-    animation: fadeInUp 1s ease-out 0.5s both;
+    background: linear-gradient(135deg, #ffffff, #d4af37);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeInUp 1s ease-out 0.3s both;
   }
 
-  .subtitle {
+  .hero-subtitle {
     font-size: clamp(1rem, 2vw, 1.25rem);
-    color: var(--color-text-secondary);
+    color: #a0a0a0;
     font-weight: 300;
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 2rem;
-    animation: fadeInUp 1s ease-out 0.7s both;
+    margin-bottom: 2.5rem;
+    animation: fadeInUp 1s ease-out 0.5s both;
   }
 
   .cta-button {
     display: inline-block;
     position: relative;
-    padding: 18px 50px;
-    border: 2px solid var(--color-primary-light);
+    padding: 16px 48px;
+    border: 2px solid #ffffff;
     background: transparent;
-    color: var(--color-primary-light);
+    color: #ffffff;
     font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 1px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     border-radius: 50px;
     cursor: pointer;
-    transition: 0.4s;
-    pointer-events: auto;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     overflow: hidden;
-    animation: fadeInUp 1s ease-out 0.9s both;
+    animation: fadeInUp 1s ease-out 0.7s both;
+    pointer-events: auto;
   }
 
   .cta-button::before {
@@ -90,21 +307,21 @@
     left: 50%;
     width: 0;
     height: 0;
-    background: var(--color-primary-light);
+    background: #d4af37;
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
+    transition: width 0.6s ease, height 0.6s ease;
     z-index: -1;
   }
 
-  .cta-button:hover::before {
-    width: 300px;
-    height: 300px;
+  .cta-button:hover {
+    color: #050505;
+    transform: scale(1.08);
   }
 
-  .cta-button:hover {
-    color: var(--color-primary-dark);
-    transform: scale(1.05);
+  .cta-button:hover::before {
+    width: 400px;
+    height: 400px;
   }
 
   .loading-screen {
@@ -113,51 +330,44 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--color-primary-dark);
+    background: #050505;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 2000;
     animation: fadeOut 0.8s ease-out 2s forwards;
   }
 
   .loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 2px solid var(--color-text-secondary);
-    border-top: 2px solid var(--color-primary-light);
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top: 3px solid #d4af37;
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
 
-  .glass-overlay {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 2rem;
-    max-width: 500px;
-  }
-
   .scroll-hint {
     position: absolute;
-    bottom: 30px;
+    bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-    opacity: 0.6;
+    font-size: 2.5rem;
+    opacity: 0.7;
     animation: bounce 2s infinite;
-    font-size: 2rem;
+    color: #ffffff;
   }
 
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   @keyframes fadeInUp {
     from {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(40px);
     }
     to {
       opacity: 1;
@@ -166,31 +376,56 @@
   }
 
   @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; pointer-events: none; }
+    from {
+      opacity: 1;
+      visibility: visible;
+    }
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
   }
 
   @keyframes bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(-10px); }
+    0%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(-15px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .glass-overlay {
+      padding: 2rem 1.5rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+    }
+
+    .cta-button {
+      padding: 12px 32px;
+      font-size: 12px;
+    }
   }
 </style>
 
 {% schema %}
 {
-  "name": "Luxury 3D Hero",
+  "name": "Luxury 3D Hero Section",
   "settings": [
     {
       "type": "text",
       "id": "title",
       "label": "Heading",
-      "default": "Premium 3D Experience"
+      "default": "Premium Luxury Experience"
     },
     {
       "type": "text",
       "id": "subtitle",
       "label": "Subtitle",
-      "default": "Crafted for luxury brands"
+      "default": "Discover our exclusive collection"
     },
     {
       "type": "url",
@@ -201,7 +436,7 @@
       "type": "text",
       "id": "button_text",
       "label": "Button Text",
-      "default": "Shop Now"
+      "default": "Shop Collection"
     }
   ],
   "presets": [

@@ -1,0 +1,122 @@
+{% section 'header' %}
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99;
+    background: rgba(5, 5, 5, 0.85);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1rem 2rem;
+  }
+
+  .header-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .header-logo {
+    flex: 0 0 auto;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: #ffffff;
+  }
+
+  .header-logo a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .header-nav {
+    flex: 1 1 auto;
+    display: flex;
+  }
+
+  .nav-list {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-link {
+    color: #a0a0a0;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    position: relative;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #d4af37;
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover {
+    color: #ffffff;
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  .header-actions {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .cart-link {
+    position: relative;
+    color: #ffffff;
+    font-size: 1.25rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .cart-link:hover {
+    color: #d4af37;
+  }
+
+  .cart-count {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: #d4af37;
+    color: #050505;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 768px) {
+    .header-nav {
+      display: none;
+    }
+
+    .nav-list {
+      gap: 1rem;
+    }
+  }
+</style>

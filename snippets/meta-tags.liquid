@@ -1,21 +1,9 @@
-<meta name="og:type" content="website">
-<meta name="og:url" content="{{ canonical_url }}">
-<meta name="og:title" content="{% if page_title == blank %}{{ shop.name }}{% else %}{{ page_title }}{% endif %}">
-<meta name="og:description" content="{{ page_description | default: shop.description | escape }}">
+<!-- Meta Tags for SEO & Social -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{% if page_title == blank %}{{ shop.name }}{% else %}{{ page_title }}{% endif %}">
+<meta property="og:description" content="{{ page_description | default: shop.description | escape }}">
+<meta property="og:image" content="{{ 'og-image.jpg' | asset_url }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{% if page_title == blank %}{{ shop.name }}{% else %}{{ page_title }}{% endif %}">
 <meta name="twitter:description" content="{{ page_description | default: shop.description | escape }}">
-
-{% if settings.performance_reduce_motion %}
-  <style>
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-  </style>
-{% endif %}

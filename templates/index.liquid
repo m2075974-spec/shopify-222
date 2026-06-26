@@ -1,1 +1,88 @@
 {% section 'luxury-hero' %}
+
+<section class="featured-products" data-section-id="{{ section.id }}">
+  <div class="container">
+    <h2>Featured Collection</h2>
+    <div class="products-grid">
+      {% for product in collections.featured.products limit: 6 %}
+        <div class="product-card">
+          {% if product.featured_image %}
+            <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}">
+          {% endif %}
+          <h3>{{ product.title }}</h3>
+          <p class="price">{{ product.price | money }}</p>
+          <a href="{{ product.url }}" class="btn">View Product</a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .featured-products {
+    padding: 4rem 2rem;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .featured-products h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: clamp(2rem, 5vw, 3rem);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .product-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.4s ease;
+    cursor: pointer;
+  }
+
+  .product-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-5px);
+    border-color: rgba(212, 175, 55, 0.3);
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .product-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .product-card .price {
+    color: var(--color-accent);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .product-card .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: var(--color-accent);
+    color: var(--color-primary-dark);
+    border-radius: 6px;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+
+  .product-card .btn:hover {
+    opacity: 0.8;
+  }
+</style>
