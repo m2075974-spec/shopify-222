@@ -5,7 +5,7 @@
     <h2>Featured Collection</h2>
     <div class="products-grid">
       {% for product in collections.featured.products limit: 6 %}
-        <div class="product-card">
+        <div class="product-card" data-product-id="{{ product.id }}">
           {% if product.featured_image %}
             <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}">
           {% endif %}
@@ -28,6 +28,7 @@
     text-align: center;
     margin-bottom: 3rem;
     font-size: clamp(2rem, 5vw, 3rem);
+    animation: fadeInScale 0.8s ease-out;
   }
 
   .products-grid {
@@ -45,12 +46,22 @@
     padding: 1.5rem;
     transition: all 0.4s ease;
     cursor: pointer;
+    animation: slideInUp 0.6s ease-out forwards;
+    opacity: 0;
   }
+
+  .product-card:nth-child(1) { animation-delay: 0.1s; }
+  .product-card:nth-child(2) { animation-delay: 0.2s; }
+  .product-card:nth-child(3) { animation-delay: 0.3s; }
+  .product-card:nth-child(4) { animation-delay: 0.4s; }
+  .product-card:nth-child(5) { animation-delay: 0.5s; }
+  .product-card:nth-child(6) { animation-delay: 0.6s; }
 
   .product-card:hover {
     background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-5px);
-    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateY(-10px) rotateX(5deg);
+    border-color: rgba(212, 175, 55, 0.5);
+    box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
   }
 
   .product-card img {
@@ -59,11 +70,21 @@
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 1rem;
+    transition: all 0.4s ease;
+  }
+
+  .product-card:hover img {
+    transform: scale(1.05) rotate(2deg);
   }
 
   .product-card h3 {
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .product-card:hover h3 {
+    color: #d4af37;
   }
 
   .product-card .price {
@@ -79,10 +100,33 @@
     color: var(--color-primary-dark);
     border-radius: 6px;
     font-weight: 600;
-    transition: 0.3s;
+    transition: all 0.3s;
   }
 
   .product-card .btn:hover {
     opacity: 0.8;
+    transform: scale(1.05);
+  }
+
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>

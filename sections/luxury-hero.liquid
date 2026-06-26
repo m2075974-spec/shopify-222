@@ -1,10 +1,11 @@
 <div id="hero" class="hero" data-section-id="{{ section.id }}">
   <div class="loading-screen">
     <div class="loading-spinner"></div>
+    <p class="loading-text">Loading 3D Experience...</p>
   </div>
 
   <!-- Canvas for 3D Scene -->
-  <canvas id="canvas" style="display: block; width: 100%; height: 100%;"></canvas>
+  <canvas id="canvas" style="display: block; width: 100%; height: 100%; position: absolute;"></canvas>
 
   <!-- Content Overlay -->
   <div class="hero-content">
@@ -18,16 +19,16 @@
   </div>
 
   <!-- Scroll Hint -->
-  <div class="scroll-hint">↓</div>
+  <div class="scroll-hint">↓ Scroll to explore</div>
 </div>
 
-<!-- 3D Scene Script -->
+<!-- 3D T-Shirt Scene Script with Animations -->
 <script type="module">
-  // Import Three.js
   import * as THREE from 'https://cdn.jsdelivr.net/npm/three@r128/build/three.module.js';
   import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@r128/examples/jsm/loaders/GLTFLoader.js';
+  import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@r128/examples/jsm/controls/OrbitControls.js';
 
-  class PremiumHeroScene {
+  class TShirtHeroScene {
     constructor() {
       this.canvas = document.getElementById('canvas');
       if (!this.canvas) return;
@@ -42,7 +43,7 @@
         0.1,
         1000
       );
-      this.camera.position.set(0, 1.5, 4);
+      this.camera.position.set(0, 1.2, 3);
 
       this.renderer = new THREE.WebGLRenderer({
         canvas: this.canvas,
@@ -50,57 +51,79 @@
         alpha: true,
         powerPreference: 'high-performance'
       });
-      this.renderer.setPixelRatio(window.devicePixelRatio);
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       this.renderer.setSize(window.innerWidth, window.innerHeight);
       this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+      this.renderer.shadowMap.enabled = true;
 
       this.setupLighting();
       this.createParticles();
-      this.loadModel();
+      this.createTShirt();
       this.setupEventListeners();
       this.animate();
     }
 
     setupLighting() {
-      // Directional light
-      const directional = new THREE.DirectionalLight(0xffffff, 3);
+      // Main directional light
+      const directional = new THREE.DirectionalLight(0xffffff, 2.5);
       directional.position.set(5, 10, 7.5);
+      directional.castShadow = true;
+      directional.shadow.mapSize.width = 2048;
+      directional.shadow.mapSize.height = 2048;
       this.scene.add(directional);
 
-      // Ambient light
-      const ambient = new THREE.AmbientLight(0xffffff, 1.2);
-      this.scene.add(ambient);
+      // Key light
+      const keyLight = new THREE.PointLight(0xffd4a3, 2);
+      keyLight.position.set(-5, 5, 5);
+      this.scene.add(keyLight);
 
-      // Point light for accent
-      const point = new THREE.PointLight(0xff6b9d, 1.5);
-      point.position.set(-5, 3, 5);
-      this.scene.add(point);
+      // Fill light (gold accent)
+      const fillLight = new THREE.PointLight(0xd4af37, 1.5);
+      fillLight.position.set(5, 3, -5);
+      this.scene.add(fillLight);
+
+      // Ambient light
+      const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+      this.scene.add(ambient);
     }
 
     createParticles() {
-      const particleCount = 500;
+      const particleCount = 300;
       const geometry = new THREE.BufferGeometry();
       const positions = new Float32Array(particleCount * 3);
       const velocities = new Float32Array(particleCount * 3);
+      const colors = new Float32Array(particleCount * 3);
 
       for (let i = 0; i < particleCount; i++) {
-        positions[i * 3] = (Math.random() - 0.5) * 20;
-        positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+        positions[i * 3] = (Math.random() - 0.5) * 15;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 15;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 15;
 
-        velocities[i * 3] = (Math.random() - 0.5) * 0.02;
-        velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
-        velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
+        velocities[i * 3] = (Math.random() - 0.5) * 0.015;
+        velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.015;
+        velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.015;
+
+        // Mix of white and gold colors
+        if (Math.random() > 0.7) {
+          colors[i * 3] = 1;      // Red
+          colors[i * 3 + 1] = 0.85; // Green
+          colors[i * 3 + 2] = 0.2;  // Blue (gold-ish)
+        } else {
+          colors[i * 3] = 1;      // White
+          colors[i * 3 + 1] = 1;
+          colors[i * 3 + 2] = 1;
+        }
       }
 
       geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
       geometry.userData.velocities = velocities;
 
       const material = new THREE.PointsMaterial({
-        color: 0xffffff,
-        size: 0.1,
+        size: 0.08,
         transparent: true,
-        opacity: 0.5,
+        opacity: 0.6,
+        vertexColors: true,
         sizeAttenuation: true
       });
 
@@ -108,35 +131,75 @@
       this.scene.add(this.particleSystem);
     }
 
-    loadModel() {
-      // Optional: Load 3D model if URL provided
-      const modelUrl = window.themeSettings?.modelAssetUrl || '';
-      if (modelUrl) {
-        const loader = new GLTFLoader();
-        loader.load(
-          modelUrl,
-          (gltf) => {
-            this.model = gltf.scene;
-            this.model.scale.set(2, 2, 2);
-            this.scene.add(this.model);
-            this.hideLoadingScreen();
-          },
-          undefined,
-          (error) => {
-            console.log('Model not loaded, using placeholder effects only');
-            this.hideLoadingScreen();
-          }
-        );
-      } else {
-        setTimeout(() => this.hideLoadingScreen(), 1500);
-      }
-    }
+    createTShirt() {
+      // Create a simple T-shirt geometry
+      const tshirtGroup = new THREE.Group();
+      
+      // T-shirt body
+      const bodyGeometry = new THREE.BoxGeometry(1.2, 1.5, 0.3);
+      const bodyMaterial = new THREE.MeshStandardMaterial({
+        color: 0xff0000,
+        metalness: 0.1,
+        roughness: 0.7
+      });
+      const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+      body.position.y = 0;
+      body.castShadow = true;
+      body.receiveShadow = true;
+      tshirtGroup.add(body);
 
-    hideLoadingScreen() {
-      const loadingScreen = document.querySelector('.loading-screen');
-      if (loadingScreen) {
-        loadingScreen.style.animation = 'fadeOut 0.8s ease-out forwards';
-      }
+      // Left sleeve
+      const sleeveGeometry = new THREE.BoxGeometry(0.6, 0.5, 0.3);
+      const sleeveMaterial = new THREE.MeshStandardMaterial({
+        color: 0xcc0000,
+        metalness: 0.1,
+        roughness: 0.7
+      });
+      const leftSleeve = new THREE.Mesh(sleeveGeometry, sleeveMaterial);
+      leftSleeve.position.set(-0.9, 0.6, 0);
+      leftSleeve.rotation.z = 0.3;
+      leftSleeve.castShadow = true;
+      leftSleeve.receiveShadow = true;
+      tshirtGroup.add(leftSleeve);
+
+      // Right sleeve
+      const rightSleeve = new THREE.Mesh(sleeveGeometry, sleeveMaterial);
+      rightSleeve.position.set(0.9, 0.6, 0);
+      rightSleeve.rotation.z = -0.3;
+      rightSleeve.castShadow = true;
+      rightSleeve.receiveShadow = true;
+      tshirtGroup.add(rightSleeve);
+
+      // Collar
+      const collarGeometry = new THREE.BoxGeometry(0.8, 0.3, 0.3);
+      const collarMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffd4a3,
+        metalness: 0.2,
+        roughness: 0.6
+      });
+      const collar = new THREE.Mesh(collarGeometry, collarMaterial);
+      collar.position.set(0, 0.85, 0);
+      collar.castShadow = true;
+      collar.receiveShadow = true;
+      tshirtGroup.add(collar);
+
+      // Logo/design on chest
+      const logoGeometry = new THREE.CircleGeometry(0.3, 32);
+      const logoMaterial = new THREE.MeshStandardMaterial({
+        color: 0xd4af37,
+        metalness: 0.5,
+        roughness: 0.3,
+        emissive: 0xd4af37,
+        emissiveIntensity: 0.2
+      });
+      const logo = new THREE.Mesh(logoGeometry, logoMaterial);
+      logo.position.set(0, 0.2, 0.16);
+      logo.castShadow = true;
+      logo.receiveShadow = true;
+      tshirtGroup.add(logo);
+
+      this.tshirtGroup = tshirtGroup;
+      this.scene.add(tshirtGroup);
     }
 
     setupEventListeners() {
@@ -158,16 +221,22 @@
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       this.scrollProgress = scrollTop / docHeight;
+
+      // Animate camera based on scroll
+      if (this.camera) {
+        this.camera.position.z = 3 + this.scrollProgress * 1.5;
+      }
     }
 
     onMouseMove(event) {
-      if (!this.model) return;
-
       const x = (event.clientX / window.innerWidth) * 2 - 1;
       const y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-      this.model.rotation.y += (x - this.model.rotation.y) * 0.05;
-      this.model.rotation.x += (y - this.model.rotation.x) * 0.05;
+      if (this.tshirtGroup) {
+        // Smooth rotation based on mouse position
+        this.tshirtGroup.rotation.y += (x * 0.5 - this.tshirtGroup.rotation.y) * 0.05;
+        this.tshirtGroup.rotation.x += (y * 0.3 - this.tshirtGroup.rotation.x) * 0.05;
+      }
     }
 
     updateParticles() {
@@ -180,6 +249,11 @@
         positions[i] += velocities[i];
         positions[i + 1] += velocities[i + 1];
         positions[i + 2] += velocities[i + 2];
+
+        // Bounce off boundaries
+        if (Math.abs(positions[i]) > 7.5) velocities[i] *= -1;
+        if (Math.abs(positions[i + 1]) > 7.5) velocities[i + 1] *= -1;
+        if (Math.abs(positions[i + 2]) > 7.5) velocities[i + 2] *= -1;
       }
 
       this.particleSystem.geometry.attributes.position.needsUpdate = true;
@@ -188,17 +262,19 @@
     animate() {
       requestAnimationFrame(() => this.animate());
 
-      // Auto-rotate model
-      if (this.model) {
-        this.model.rotation.y += 0.001;
+      // Auto-rotate T-shirt
+      if (this.tshirtGroup) {
+        this.tshirtGroup.rotation.y += 0.002;
+        this.tshirtGroup.position.y = Math.sin(Date.now() * 0.0005) * 0.3;
       }
 
       // Update particles
       this.updateParticles();
 
-      // Camera animation on scroll
-      if (this.camera) {
-        this.camera.position.z = 4 - this.scrollProgress * 2;
+      // Rotate particles
+      if (this.particleSystem) {
+        this.particleSystem.rotation.x += 0.0002;
+        this.particleSystem.rotation.y += 0.0003;
       }
 
       this.renderer.render(this.scene, this.camera);
@@ -208,10 +284,22 @@
   // Initialize scene when page loads
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      new PremiumHeroScene();
+      new TShirtHeroScene();
+      setTimeout(() => {
+        const loadingScreen = document.querySelector('.loading-screen');
+        if (loadingScreen) {
+          loadingScreen.style.animation = 'fadeOut 0.8s ease-out forwards';
+        }
+      }, 1500);
     });
   } else {
-    new PremiumHeroScene();
+    new TShirtHeroScene();
+    setTimeout(() => {
+      const loadingScreen = document.querySelector('.loading-screen');
+      if (loadingScreen) {
+        loadingScreen.style.animation = 'fadeOut 0.8s ease-out forwards';
+      }
+    }, 1500);
   }
 </script>
 
@@ -249,13 +337,14 @@
   }
 
   .glass-overlay {
-    background: rgba(5, 5, 5, 0.6);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(5, 5, 5, 0.7);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 24px;
     padding: 3rem 2rem;
     max-width: 600px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    animation: slideIn 0.8s ease-out;
   }
 
   .hero-title {
@@ -285,9 +374,9 @@
     display: inline-block;
     position: relative;
     padding: 16px 48px;
-    border: 2px solid #ffffff;
+    border: 2px solid #d4af37;
     background: transparent;
-    color: #ffffff;
+    color: #d4af37;
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 1.5px;
@@ -332,6 +421,7 @@
     height: 100%;
     background: #050505;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 2000;
@@ -341,10 +431,18 @@
   .loading-spinner {
     width: 60px;
     height: 60px;
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    border: 3px solid rgba(212, 175, 55, 0.2);
     border-top: 3px solid #d4af37;
     border-radius: 50%;
     animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  .loading-text {
+    color: #d4af37;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    animation: pulse 1.5s ease-in-out infinite;
   }
 
   .scroll-hint {
@@ -352,16 +450,15 @@
     bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 2.5rem;
+    font-size: 0.9rem;
     opacity: 0.7;
     animation: bounce 2s infinite;
-    color: #ffffff;
+    color: #d4af37;
+    letter-spacing: 1px;
   }
 
   @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
   }
 
   @keyframes fadeInUp {
@@ -386,12 +483,32 @@
     }
   }
 
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-50px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
   @keyframes bounce {
     0%, 100% {
       transform: translateX(-50%) translateY(0);
     }
     50% {
       transform: translateX(-50%) translateY(-15px);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
     }
   }
 
@@ -413,19 +530,19 @@
 
 {% schema %}
 {
-  "name": "Luxury 3D Hero Section",
+  "name": "Luxury 3D T-Shirt Hero Section",
   "settings": [
     {
       "type": "text",
       "id": "title",
       "label": "Heading",
-      "default": "Premium Luxury Experience"
+      "default": "Premium T-Shirt Collection"
     },
     {
       "type": "text",
       "id": "subtitle",
       "label": "Subtitle",
-      "default": "Discover our exclusive collection"
+      "default": "Experience luxury fashion with 3D animations"
     },
     {
       "type": "url",
@@ -436,12 +553,12 @@
       "type": "text",
       "id": "button_text",
       "label": "Button Text",
-      "default": "Shop Collection"
+      "default": "Shop Now"
     }
   ],
   "presets": [
     {
-      "name": "Luxury 3D Hero"
+      "name": "Luxury 3D T-Shirt Hero"
     }
   ]
 }
