@@ -1,0 +1,6 @@
+name = "Premium Luxury 3D"
+description = "A premium Shopify theme with cinematic 3D animations using Three.js and GSAP"
+
+[development]
+password = ""
+store_url = ""

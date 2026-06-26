@@ -1,0 +1,41 @@
+<header class="site-header" role="banner">
+  <div class="header-wrapper">
+    <div class="header-content">
+      <div class="header-logo">
+        {%- if shop.brand.logo -%}
+          <img src="{{ shop.brand.logo | image_url: width: 100 }}" alt="{{ shop.name }}" class="logo-image">
+        {%- else -%}
+          <a href="/" class="logo-text">{{ shop.name }}</a>
+        {%- endif -%}
+      </div>
+
+      <nav class="header-nav" role="navigation">
+        <ul class="nav-list">
+          {%- for link in linklists.main-menu.links -%}
+            <li class="nav-item">
+              <a href="{{ link.url }}" class="nav-link">{{ link.title }}</a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a href="/cart" class="cart-link">
+          <span class="cart-icon">🛍</span>
+          <span class="cart-count">{{ cart.item_count }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "presets": [
+    {
+      "name": "Header"
+    }
+  ]
+}
+{% endschema %}

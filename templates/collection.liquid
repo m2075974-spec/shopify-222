@@ -1,0 +1,12 @@
+<div class="collection-template">
+  <div class="container">
+    <h1>{{ collection.title }}</h1>
+    <div class="collection-grid">
+      {% for product in collection.products %}
+        <div class="product-card">
+          <h2>{{ product.title }}</h2>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

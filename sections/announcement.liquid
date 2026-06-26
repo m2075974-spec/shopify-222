@@ -1,0 +1,27 @@
+{%- if section.settings.announcement_text -%}
+  <div class="announcement-bar">
+    <div class="announcement-content">
+      <p>{{ section.settings.announcement_text }}</p>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement Bar",
+  "settings": [
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement Text",
+      "placeholder": "Enter announcement text",
+      "default": "🎉 Premium 3D Experience - Welcome to our luxury collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Bar"
+    }
+  ]
+}
+{% endschema %}
