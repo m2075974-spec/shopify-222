@@ -1,71 +1,123 @@
-# Premium Shopify 3D Landing Page
+# Premium Shopify 3D Landing Page + THREADVAULT
 
-A luxury e-commerce landing page built with Three.js, GSAP, and Cloudflare optimization.
+A luxury e-commerce landing page with premium T-shirt brand integration.
+
+## 🏪 Two Complete Stores
+
+### 1. **VANGUARD** - Creative Agency Landing
+- Fullscreen 3D floating T-shirt
+- Premium navbar
+- Mobile menu overlay
+- Animated entrance effects
+- Responsive design
+
+### 2. **THREADVAULT** - Premium T-Shirt Store ⭐
+- Complete homepage with hero section
+- Featured collections (6 categories)
+- Best sellers with product cards
+- Color swatches & size selector
+- Wishlist functionality
+- Shopping cart with counter
+- Why choose us section
+- Limited edition banner with countdown
+- Newsletter signup
+- Complete footer
 
 ## Tech Stack
 
-- **Framework:** HTML5 + CSS3 + JavaScript
-- **3D Engine:** Three.js
-- **Animation:** GSAP + ScrollTrigger
-- **Models:** GLB/GLTF optimized with Draco compression
-- **Performance:** Cloudflare CDN + Cloudflare Images + Brotli compression
-- **Shopify:** Custom Liquid Section
+### VANGUARD
+- **Framework:** React + Vite
+- **Styling:** Tailwind CSS
+- **Icons:** Lucide React
+- **Animation:** CSS Keyframes
+
+### THREADVAULT
+- **Framework:** React + Vite
+- **Styling:** Tailwind CSS
+- **Icons:** Lucide React
+- **Animation:** CSS Keyframes + Hover effects
 
 ## Project Structure
 
 ```
-assets/
-  ├── models/
-  │   └── hero.glb
-  ├── styles.css
-  ├── scene.js
-  └── loader.js
-
-sections/
-  └── luxury-hero.liquid
-
-scripts/
-  ├── three.min.js
-  └── gsap.min.js
-
-docs/
-  └── SETUP.md
+shopify-222/
+├── src/
+│   ├── components/
+│   │   ├── ThreadvaultHome.jsx      # Premium T-shirt store
+│   │   └── VanguardHero.jsx         # Creative agency
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── index.html
+├── vite.config.js
+├── tailwind.config.js
+├── postcss.config.js
+├── package.json
+└── THREADVAULT-README.md
 ```
 
-## Features
+## 🎨 Brand Colors
 
-### Hero Section
-- Fullscreen 3D canvas
-- Floating luxury clothing model
-- Mouse parallax effect
-- Smooth camera movement
-- Animated lighting
-- Premium loading screen
-- Glassmorphism UI
+### THREADVAULT
+| Color | Hex |
+|-------|-----|
+| Black | #0B0B0B |
+| Gold | #D4AF37 |
+| Blue | #3A86FF |
+| Dark Gray | #1D1D1D |
 
-### Scroll Animation
-- Model rotation
-- Camera zoom
-- Fabric wave simulation
-- Background color transitions
-- Text fade animations
-- CTA button entrance
+## 🚀 Quick Start
 
-### Effects
-- Floating particles
-- Dynamic shadows
-- HDR environment
-- Bloom effects
-- Motion blur
-- 60 FPS optimization
+### Install
+```bash
+npm install
+```
 
-## Installation
+### Development
+```bash
+npm run dev
+```
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Configure Cloudflare Workers (optional)
-4. Deploy to Shopify
+### Build
+```bash
+npm run build
+```
 
-## Documentation
+## 📱 Features
 
-See [SETUP.md](docs/SETUP.md) for detailed setup instructions.
+- ✅ Fully responsive
+- ✅ Mobile menu
+- ✅ Product grid with animations
+- ✅ Color swatches
+- ✅ Size selector
+- ✅ Wishlist
+- ✅ Shopping cart
+- ✅ Star ratings
+- ✅ Newsletter signup
+- ✅ Countdown timer
+- ✅ Smooth animations
+
+## 🛍️ THREADVAULT Homepage Sections
+
+1. **Hero** - Animated T-shirt + CTAs
+2. **Featured Collections** - 6 categories
+3. **Best Sellers** - 4 products with full features
+4. **Why Choose Us** - 5 benefits
+5. **Limited Edition** - Banner with countdown
+6. **Newsletter** - Email signup
+7. **Footer** - Complete navigation
+
+## 🎯 Shopify Integration
+
+Deploy to Shopify as:
+- Standalone React app
+- Embedded iframe
+- Liquid section with React components
+
+## 📖 Documentation
+
+See `THREADVAULT-README.md` for complete documentation.
+
+---
+
+**Ready to launch your premium T-shirt store! 🚀**
