@@ -1,10 +1,10 @@
-import React from 'react';
-import VanguardHero from './sections/vanguard-hero';
+import React, { useState } from 'react';
+import ThreadvaultHome from './components/ThreadvaultHome';
 
 export default function App() {
   return (
     <div className="w-full bg-black">
-      <VanguardHero />
+      <ThreadvaultHome />
     </div>
   );
 }
