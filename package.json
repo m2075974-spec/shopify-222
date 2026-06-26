@@ -1,0 +1,26 @@
+{
+  "name": "shopify-luxury-3d",
+  "version": "1.0.0",
+  "description": "Premium Shopify landing page with cinematic 3D animations",
+  "main": "index.js",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "echo 'Use Shopify CLI for local development'",
+    "deploy": "echo 'Deploy via Shopify Admin'"
+  },
+  "keywords": [
+    "shopify",
+    "three.js",
+    "3d",
+    "gsap",
+    "animations"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "three": "^r128"
+  },
+  "dependencies": {
+    "gsap": "^3.12.0"
+  }
+}

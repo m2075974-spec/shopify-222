@@ -1,0 +1,72 @@
+<!-- Premium Luxury Hero Section for Shopify -->
+
+{% stylesheet %}
+  {{ 'styles.css' | asset_url | stylesheet_tag }}
+{% endstylesheet %}
+
+<div id="hero" class="hero">
+  <!-- Loading Screen -->
+  <div class="loading-screen">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- 3D Canvas -->
+  <canvas id="canvas"></canvas>
+
+  <!-- Content Overlay -->
+  <div class="hero-content">
+    <div class="glass-overlay">
+      <h1>{{ section.settings.title }}</h1>
+      <p class="subtitle">{{ section.settings.subtitle }}</p>
+      <a href="{{ section.settings.button_link }}" class="cta-button">
+        {{ section.settings.button_text }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Scroll Hint -->
+  <div class="scroll-hint">↓</div>
+</div>
+
+<!-- 3D Scene Script -->
+{% javascript %}
+  import('./{{ 'scene.js' | asset_url }}');
+{% endjavascript %}
+
+<!-- Section Schema for Shopify Editor -->
+{% schema %}
+{
+  "name": "Luxury 3D Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Premium 3D Experience"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Crafted for luxury brands"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Now"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Luxury 3D Hero"
+    }
+  ]
+}
+{% endschema %}
