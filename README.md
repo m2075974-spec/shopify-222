@@ -1,71 +1,116 @@
-# Premium Shopify 3D Landing Page
+# Premium Luxury 3D Shopify Theme
 
-A luxury e-commerce landing page built with Three.js, GSAP, and Cloudflare optimization.
+**A cinematic 3D landing page theme with luxury animations and performance optimization**
 
-## Tech Stack
+## ✨ Features
 
-- **Framework:** HTML5 + CSS3 + JavaScript
-- **3D Engine:** Three.js
-- **Animation:** GSAP + ScrollTrigger
-- **Models:** GLB/GLTF optimized with Draco compression
-- **Performance:** Cloudflare CDN + Cloudflare Images + Brotli compression
-- **Shopify:** Custom Liquid Section
+- 🎨 **Cinematic 3D Animations** - Three.js powered 3D scene with floating models
+- 💎 **Luxury Design** - Glassmorphism UI, premium typography, dark luxury aesthetic
+- ⚡ **High Performance** - Optimized for 60 FPS on desktop, mobile adaptive
+- 🎯 **Customizable** - Full Shopify Admin integration with live preview
+- 📱 **Fully Responsive** - Works seamlessly on all devices
+- 🔍 **SEO Optimized** - Meta tags, Open Graph, structured data
+- ☁️ **Cloudflare Ready** - CDN optimization, edge caching
+- ♿ **Accessible** - WCAG compliant, keyboard navigation, reduce motion support
 
-## Project Structure
+## 🚀 Quick Start
 
-```
-assets/
-  ├── models/
-  │   └── hero.glb
-  ├── styles.css
-  ├── scene.js
-  └── loader.js
+```bash
+# 1. Clone the repository
+git clone https://github.com/m2075974-spec/shopify-222.git
+cd shopify-222
 
-sections/
-  └── luxury-hero.liquid
+# 2. Checkout the theme branch
+git checkout feat/luxury-3d-landing
 
-scripts/
-  ├── three.min.js
-  └── gsap.min.js
+# 3. Install Shopify CLI
+npm install -g @shopify/cli
 
-docs/
-  └── SETUP.md
+# 4. Deploy to your store
+shopify theme dev --store=your-store.myshopify.com
 ```
 
-## Features
+**For detailed setup instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)**
 
-### Hero Section
+## 📁 Theme Structure
+
+```
+├── config/              # Theme settings & customization
+├── layout/              # Main theme layout
+├── sections/            # Reusable page sections
+├── snippets/            # Liquid includes
+├── templates/           # Page templates
+└── assets/              # CSS, JavaScript, images
+```
+
+## 🎮 Sections
+
+### Luxury 3D Hero
 - Fullscreen 3D canvas
-- Floating luxury clothing model
-- Mouse parallax effect
-- Smooth camera movement
-- Animated lighting
-- Premium loading screen
-- Glassmorphism UI
+- Customizable title & subtitle
+- Call-to-action button
+- Loading animation
+- Scroll-triggered effects
 
-### Scroll Animation
-- Model rotation
-- Camera zoom
-- Fabric wave simulation
-- Background color transitions
-- Text fade animations
-- CTA button entrance
+### Header
+- Fixed navigation
+- Logo/brand display
+- Menu links
+- Shopping cart
 
-### Effects
-- Floating particles
-- Dynamic shadows
-- HDR environment
-- Bloom effects
-- Motion blur
-- 60 FPS optimization
+### Footer
+- Multi-column layout
+- Newsletter signup
+- Social media links
+- Copyright info
 
-## Installation
+## ⚙️ Customization
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Configure Cloudflare Workers (optional)
-4. Deploy to Shopify
+All settings available in **Shopify Admin > Customize > Theme settings:**
 
-## Documentation
+- **Colors** - Primary, accent, text colors
+- **Typography** - Heading and body fonts
+- **3D Scene** - Model scale, lighting, particles
+- **Performance** - Preset selection, animation preferences
+- **CDN** - Cloudflare integration
 
-See [SETUP.md](docs/SETUP.md) for detailed setup instructions.
+## 🎯 Performance
+
+- Desktop: 60 FPS
+- Mobile: 30-40 FPS (adaptive)
+- Load time: <2s (with optimization)
+- Core Web Vitals: Optimized
+
+## 📦 Tech Stack
+
+- **Shopify Liquid** - Template language
+- **Three.js** - 3D graphics engine
+- **GSAP** - Animation library
+- **CSS3** - Modern styling
+- **Cloudflare** - CDN & optimization
+
+## 🔒 Security
+
+- HTTPS only
+- Content Security Policy headers
+- XSS protection
+- CSRF tokens in forms
+
+## 📄 License
+
+MIT License - Feel free to use and customize
+
+## 🤝 Contributing
+
+Contributions welcome! Please fork and submit pull requests.
+
+## 📞 Support
+
+For issues or questions:
+1. Check [DEPLOYMENT.md](DEPLOYMENT.md)
+2. Review Shopify documentation
+3. Open a GitHub issue
+
+---
+
+**Made with ❤️ for luxury e-commerce**

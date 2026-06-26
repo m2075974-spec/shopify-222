@@ -1,26 +1,28 @@
 {
-  "name": "shopify-luxury-3d",
+  "name": "shopify-luxury-3d-theme",
   "version": "1.0.0",
-  "description": "Premium Shopify landing page with cinematic 3D animations",
-  "main": "index.js",
+  "description": "Premium Shopify theme with cinematic 3D animations",
+  "private": true,
   "scripts": {
-    "build": "node scripts/build.js",
-    "dev": "echo 'Use Shopify CLI for local development'",
-    "deploy": "echo 'Deploy via Shopify Admin'"
+    "dev": "shopify theme dev",
+    "push": "shopify theme push",
+    "pull": "shopify theme pull",
+    "lint": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@shopify/theme-cli": "^3.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-shopify": "^13.0.0"
   },
   "keywords": [
     "shopify",
+    "theme",
     "three.js",
     "3d",
+    "animations",
     "gsap",
-    "animations"
+    "luxury"
   ],
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "three": "^r128"
-  },
-  "dependencies": {
-    "gsap": "^3.12.0"
-  }
+  "author": "m2075974-spec",
+  "license": "MIT"
 }
